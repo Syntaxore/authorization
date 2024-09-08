@@ -2,6 +2,7 @@ import tkinter as tk
 import sqlite3
 import bcrypt
 from tkinter import ttk
+from tkinter.messagebox import showerror, showinfo, showwarning
 
 tkbtn = ttk.Button
 tklabel = ttk.Label
@@ -53,29 +54,43 @@ class Page1(tk.Frame):
         self.login_entry = tkentry(self)
         self.password_entry = tkentry(self, show="*")
 
-        slide = tkbtn(self, text="Регистрация", command=lambda: controller.show_frame("Page2"))
-        create_account = tkbtn(self, text="Войти", command=self.checklogin)
+        # Упаковка заголовка
+        label0.grid(row=0, column=0, columnspan=2, pady=20)
 
-        # Упаковка виджетов
-        label0.pack(pady=20)
-        login_text.pack(anchor="nw", padx=10, pady=5)
-        self.login_entry.pack(anchor="nw", padx=10, pady=5)
-        password_login.pack(anchor="nw", padx=10, pady=5)
-        self.password_entry.pack(anchor="nw", padx=10, pady=5)
-        create_account.pack(anchor="nw", padx=10, pady=20)
-        slide.pack(anchor="nw", padx=10, pady=5)
+        # Упаковка меток и полей ввода
+        login_text.grid(row=1, column=0, padx=10, pady=5, sticky="e")
+        self.login_entry.grid(row=1, column=1, padx=10, pady=5)
+
+        password_login.grid(row=2, column=0, padx=10, pady=5, sticky="e")
+        self.password_entry.grid(row=2, column=1, padx=10, pady=5)
+
+        # Кнопки
+        button_frame = tk.Frame(self)
+        create_account = tkbtn(button_frame, text="Войти", command=self.checklogin)
+        slide = tkbtn(button_frame, text="Регистрация", command=lambda: controller.show_frame("Page2"))
+
+        # Упаковка кнопок в горизонтальном фрейме
+        button_frame.grid(row=3, column=0, columnspan=2, pady=20)
+        create_account.pack(side="left", padx=5)
+        slide.pack(side="left", padx=5)
 
         # Установка фокуса на поле логина
         self.login_entry.focus()
 
+        # Центрирование элементов
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        
     def checklogin(self):
         login = self.login_entry.get()
         password = self.password_entry.get()
 
         if not login or not password:
-            deny = tklabel(self, text="Ошибка!", font=("Arial", 12))
-            deny.pack(padx=10, pady=5)
-            self.after(5000, deny.destroy)
+            showerror(title="Ошибка!", message="Ошибка входа!")
             return
 
         # Проверка логина и пароля
@@ -84,11 +99,11 @@ class Page1(tk.Frame):
 
         if result and bcrypt.checkpw(password.encode('utf-8'), result[0]):
             done = tklabel(self, text="Вход прошел успешно!", font=("Arial", 12))
-            done.pack(padx=10, pady=5)
+            done.grid(row=4, column=0, columnspan=2, pady=5)
             self.after(5000, done.destroy)
         else:
             deny = tklabel(self, text="Неверный логин или пароль!", font=("Arial", 12))
-            deny.pack(padx=10, pady=5)
+            deny.grid(row=4, column=0, columnspan=2, pady=5)
             self.after(5000, deny.destroy)
 
 
@@ -105,29 +120,43 @@ class Page2(tk.Frame):
         self.login_entry = tkentry(self)
         self.password_entry = tkentry(self, show="*")
 
-        slide = tkbtn(self, text="Назад", command=lambda: controller.show_frame("Page1"))
-        create_account = tkbtn(self, text="Создать", command=self.register_user)
+        # Упаковка заголовка
+        label0.grid(row=0, column=0, columnspan=2, pady=20)
 
-        # Упаковка виджетов
-        label0.pack(pady=20)
-        login_text.pack(anchor="nw", padx=10, pady=5)
-        self.login_entry.pack(anchor="nw", padx=10, pady=5)
-        password_login.pack(anchor="nw", padx=10, pady=5)
-        self.password_entry.pack(anchor="nw", padx=10, pady=5)
-        create_account.pack(anchor="nw", padx=10, pady=20)
-        slide.pack(anchor="nw", padx=10, pady=5)
+        # Упаковка меток и полей ввода
+        login_text.grid(row=1, column=0, padx=10, pady=5, sticky="e")
+        self.login_entry.grid(row=1, column=1, padx=10, pady=5)
+
+        password_login.grid(row=2, column=0, padx=10, pady=5, sticky="e")
+        self.password_entry.grid(row=2, column=1, padx=10, pady=5)
+
+        # Кнопки
+        button_frame = tk.Frame(self)
+        create_account = tkbtn(button_frame, text="Создать", command=self.register_user)
+        slide = tkbtn(button_frame, text="Назад", command=lambda: controller.show_frame("Page1"))
+
+        # Упаковка кнопок в горизонтальном фрейме
+        button_frame.grid(row=3, column=0, columnspan=2, pady=20)
+        create_account.pack(side="left", padx=5)
+        slide.pack(side="left", padx=5)
 
         # Установка фокуса на поле логина
         self.login_entry.focus()
 
+        # Центрирование элементов
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        
     def register_user(self):
         login = self.login_entry.get()
         password = self.password_entry.get()
 
         if not login or not password:
-            deny = tklabel(self, text="Ошибка в регистрации!", font=("Arial", 12))
-            deny.pack(padx=10, pady=5)
-            self.after(5000, deny.destroy)
+            showerror(title="Ошибка!", message="Ошибка в регистрации!")
             return
 
         # Хеширование пароля
@@ -137,11 +166,11 @@ class Page2(tk.Frame):
             cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (login, hashed_password))
             conn.commit()
             done = tklabel(self, text="Регистрация прошла успешно!", font=("Arial", 12))
-            done.pack(padx=10, pady=5)
+            done.grid(row=4, column=0, columnspan=2, pady=5)
             self.after(5000, done.destroy)
         except sqlite3.IntegrityError:
             deny = tklabel(self, text="Пользователь с таким логином уже существует!", font=("Arial", 12))
-            deny.pack(padx=10, pady=5)
+            deny.grid(row=4, column=0, columnspan=2, pady=5)
             self.after(5000, deny.destroy)
 
 
